@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>ma.enset</groupId>
+    <artifactId>projet-aspectj</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>Projet AspectJ - Banking Application</name>
+    <description>Application bancaire démontrant l'AOP avec AspectJ (tissage à la compilation)</description>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <aspectj.version>1.9.19</aspectj.version>
+    </properties>
+
+    <dependencies>
+        <!-- AspectJ Runtime - Nécessaire pour l'exécution des aspects -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>${aspectj.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- 
+                POINT DE TISSAGE (WEAVING) : AspectJ Maven Plugin
+                Ce plugin utilise le compilateur AspectJ (ajc) au lieu du compilateur Java standard (javac).
+                Le tissage se fait à la COMPILATION : les aspects sont intégrés directement dans le bytecode
+                des classes métier, créant ainsi un fichier .class final qui contient déjà le code des aspects.
+            -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>aspectj-maven-plugin</artifactId>
+                <version>1.14.0</version>
+                <configuration>
+                    <complianceLevel>17</complianceLevel>
+                    <source>17</source>
+                    <target>17</target>
+                    <showWeaveInfo>true</showWeaveInfo>
+                    <verbose>true</verbose>
+                    <Xlint>ignore</Xlint>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <!-- Compile les sources et tisse les aspects -->
+                            <goal>compile</goal>
+                            <goal>test-compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjtools</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <!-- Plugin pour exécuter l'application -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <mainClass>ma.enset.banking.Application</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
